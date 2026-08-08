@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>PCM Mock Arena</title>
-  <meta name="description" content="Interactive Physics, Chemistry and Maths mock questions.">
+  <title>PCB Mock Arena</title>
+  <meta name="description" content="Interactive Physics, Chemistry and Biology mock questions.">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
@@ -14,7 +14,7 @@
 <nav class="navbar navbar-expand-lg navbar-dark sticky-top glass-nav">
   <div class="container">
     <a class="navbar-brand fw-bold" href="#">
-      <span class="brand-dot"></span> PCM Mock Arena
+      <span class="brand-dot"></span> PCB Mock Arena
     </a>
     <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#nav">
       <span class="navbar-toggler-icon"></span>
@@ -22,9 +22,9 @@
     <div id="nav" class="collapse navbar-collapse">
       <div class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
         <button class="nav-subject active" data-subject="Physics"><i class="bi bi-lightning-charge"></i> Physics</button>
-        <button class="nav-subject" data-subject="Chemistry"><i class="bi bi-droplet"></i> Chemistry</button>
-        <button class="nav-subject" data-subject="Maths"><i class="bi bi-calculator"></i> Maths</button>
-        <button class="btn btn-outline-light btn-sm ms-lg-2" id="adminBtn"><i class="bi bi-pencil-square"></i> Admin</button>
+        <button class="nav-subject" data-subject="Chemistry"><i class="bi bi-flask"></i> Chemistry</button>
+        <button class="nav-subject" data-subject="Biology"><i class="bi bi-heart-pulse"></i> Biology</button>
+        <button class="btn btn-outline-light btn-sm ms-lg-2 admin-pill" id="adminBtn"><i class="bi bi-shield-lock"></i> Admin</button>
       </div>
     </div>
   </div>
@@ -33,17 +33,18 @@
 <header class="hero">
   <div class="container">
     <div class="hero-card">
-      <div>
+      <div class="hero-copy">
         <span class="eyebrow">PRACTICE • TEST • IMPROVE</span>
-        <h1>Challenge yourself with <span>PCM</span> mocks.</h1>
-        <p class="lead">Pick a subject, study the question screenshot, choose an option and instantly see whether your answer is correct.</p>
-        <div class="hero-stats">
-          <div><strong id="totalCount">0</strong><span>Questions</span></div>
-          <div><strong id="scoreCount">0</strong><span>Score</span></div>
-          <div><strong id="answeredCount">0</strong><span>Answered</span></div>
+        <h1>Hello Uma Bharti <span>👋</span></h1>
+        <h2>Master <span>PCB</span> one question at a time.</h2>
+        <p class="lead">Choose Physics, Chemistry or Biology, attempt the question and get an instant result with the correct answer and solution.</p>
+        <div class="hero-actions">
+          <button class="hero-cta" data-scroll="#questionList"><i class="bi bi-play-circle-fill"></i> Start solving</button>
+          <button class="hero-secondary" id="heroAdmin"><i class="bi bi-person-gear"></i> Admin panel</button>
         </div>
       </div>
       <div class="hero-art"><i class="bi bi-mortarboard-fill"></i></div>
+      <div class="floating-orb orb-one"></div><div class="floating-orb orb-two"></div>
     </div>
   </div>
 </header>
@@ -51,21 +52,19 @@
 <main class="container pb-5">
   <div class="subject-strip">
     <div>
-      <span class="small text-uppercase opacity-75">Current subject</span>
+      <span class="small text-uppercase subject-kicker">Choose a subject</span>
       <h2 id="subjectTitle">Physics</h2>
     </div>
-    <div class="progress-wrap">
-      <div class="d-flex justify-content-between small mb-1"><span>Progress</span><span id="progressText">0%</span></div>
-      <div class="progress"><div id="progressBar" class="progress-bar" style="width:0%"></div></div>
-    </div>
+    <div class="subject-tip"><i class="bi bi-lightbulb"></i> Select an option to reveal the answer</div>
   </div>
 
   <section id="questionList" class="question-list"></section>
 
   <div id="emptyState" class="empty-state d-none">
-    <i class="bi bi-images"></i>
+    <div class="empty-icon"><i class="bi bi-journal-plus"></i></div>
     <h3>No questions yet</h3>
-    <p>Add questions from <b>Admin</b>. You can use a screenshot for each question.</p>
+    <p>Add questions from <b>Admin</b>. You can upload a screenshot for free OCR and then manually correct everything before publishing.</p>
+    <button class="btn btn-primary rounded-pill px-4" id="emptyAdmin"><i class="bi bi-plus-circle"></i> Open Admin</button>
   </div>
 </main>
 
@@ -75,58 +74,73 @@
     <div class="modal-content admin-modal">
       <div class="modal-header">
         <div>
-          <h5 class="modal-title"><i class="bi bi-sliders2"></i> Question Manager</h5>
-          <small class="text-muted">Changes saved to the shared database appear for visitors after refresh.</small>
+          <h5 class="modal-title"><i class="bi bi-shield-check"></i> Question Manager</h5>
+          <small class="text-muted">AI/OCR is only a starting point — you can edit every field before publishing.</small>
         </div>
         <button class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
         <div id="loginPanel">
           <div class="login-box">
+            <div class="login-icon"><i class="bi bi-shield-lock"></i></div>
             <h5>Admin login</h5>
             <p class="text-muted">Use the Firebase email/password account you created for the site administrator.</p>
             <input id="loginEmail" type="email" class="form-control mb-2" placeholder="Admin email">
             <input id="loginPassword" type="password" class="form-control mb-2" placeholder="Password">
-            <button id="loginBtn" class="btn btn-primary w-100">Login</button>
+            <button id="loginBtn" class="btn btn-primary w-100 rounded-pill">Login securely</button>
             <div id="loginMsg" class="small mt-2"></div>
           </div>
         </div>
 
         <div id="editorPanel" class="d-none">
-          <div class="d-flex justify-content-between align-items-center mb-3">
-            <span class="badge text-bg-success"><i class="bi bi-cloud-check"></i> Admin connected</span>
-            <div>
-              <button id="seedBtn" class="btn btn-outline-success btn-sm me-1"><i class="bi bi-database-add"></i> Add 5 starter questions</button>
-              <button id="newQuestionBtn" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg"></i> New question</button>
-              <button id="importStarterBtn" class="btn btn-outline-primary btn-sm"><i class="bi bi-cloud-upload"></i> Add starter questions</button>
-              <button id="logoutBtn" class="btn btn-outline-secondary btn-sm">Logout</button>
+          <div class="admin-toolbar mb-3">
+            <span class="badge text-bg-success rounded-pill"><i class="bi bi-cloud-check"></i> Admin connected</span>
+            <div class="d-flex flex-wrap gap-2">
+              <button id="newQuestionBtn" class="btn btn-primary btn-sm rounded-pill"><i class="bi bi-plus-lg"></i> New question</button>
+              <button id="seedBtn" class="btn btn-outline-success btn-sm rounded-pill"><i class="bi bi-database-add"></i> Add starter questions</button>
+              <button id="logoutBtn" class="btn btn-outline-secondary btn-sm rounded-pill">Logout</button>
             </div>
           </div>
+
           <form id="questionForm" class="editor-card">
             <input type="hidden" id="questionId">
+            <div class="editor-heading">
+              <div>
+                <span class="eyebrow-dark">QUESTION EDITOR</span>
+                <h5 class="mb-1">Create or correct a question</h5>
+              </div>
+              <span class="small text-muted">Everything here can be edited manually.</span>
+            </div>
+
             <div class="row g-3">
               <div class="col-md-4">
                 <label class="form-label">Subject</label>
                 <select id="qSubject" class="form-select" required>
-                  <option>Physics</option><option>Chemistry</option><option>Maths</option>
+                  <option>Physics</option><option>Chemistry</option><option>Biology</option>
                 </select>
               </div>
               <div class="col-md-8">
                 <label class="form-label">Question title / label</label>
-                <input id="qTitle" class="form-control" placeholder="e.g. JEE Main 2026 — Question 12" required>
+                <input id="qTitle" class="form-control" placeholder="e.g. NEET 2026 — Question 12" required>
               </div>
+
               <div class="col-12">
                 <div class="ai-import-box">
-                  <label class="form-label fw-bold"><i class="bi bi-stars"></i> Free AI/OCR Question Import</label>
-                  <p class="small text-muted mb-2">Upload your screenshot. The browser reads the text locally using Tesseract.js. No paid API or API key is required. Always verify the extracted text and correct answer.</p>
+                  <div class="d-flex align-items-center gap-2 mb-1"><i class="bi bi-stars fs-5"></i><strong>Free screenshot → text importer</strong></div>
+                  <p class="small text-muted mb-2">Upload the screenshot. OCR reads it in the browser. Nothing is published until you review and save it.</p>
                   <input id="aiImage" type="file" accept="image/*" class="form-control">
-                  <button type="button" id="extractBtn" class="btn btn-dark mt-2"><i class="bi bi-magic"></i> Extract text from screenshot</button>
+                  <button type="button" id="extractBtn" class="btn btn-dark rounded-pill mt-2"><i class="bi bi-magic"></i> Extract text</button>
                   <div id="aiMsg" class="small mt-2"></div>
                 </div>
               </div>
+
               <div class="col-12">
-                <label class="form-label">Question text <span class="text-muted">(the public page shows text, not the screenshot)</span></label>
-                <textarea id="qText" class="form-control" rows="2" placeholder="Optional text shown below the screenshot"></textarea>
+                <label class="form-label">Question text <span class="text-muted">— edit this manually if OCR is wrong</span></label>
+                <textarea id="qText" class="form-control editor-textarea" rows="5" placeholder="Type or paste the complete question here..."></textarea>
+              </div>
+
+              <div class="col-12">
+                <div class="manual-section-title"><i class="bi bi-ui-checks"></i> Answer options</div>
               </div>
               <div class="col-md-6">
                 <label class="form-label">Option A</label><input id="optA" class="form-control" required>
@@ -140,25 +154,41 @@
               <div class="col-md-6">
                 <label class="form-label">Option D</label><input id="optD" class="form-control" required>
               </div>
+
               <div class="col-md-6">
-                <label class="form-label">Correct option</label>
+                <label class="form-label">Manual correct answer</label>
                 <select id="correct" class="form-select" required>
                   <option value="0">A</option><option value="1">B</option><option value="2">C</option><option value="3">D</option>
                 </select>
+                <div class="form-text">You choose the final answer. OCR never decides it for you.</div>
               </div>
               <div class="col-md-6">
-                <label class="form-label">Explanation (optional)</label>
-                <input id="explanation" class="form-control" placeholder="Short explanation after answering">
+                <label class="form-label">Solution description</label>
+                <textarea id="explanation" class="form-control" rows="3" placeholder="Write the solution/explanation shown after the student answers..."></textarea>
+              </div>
+
+              <div class="col-12">
+                <div class="manual-section-title"><i class="bi bi-image"></i> Optional diagram / question image</div>
+                <div class="diagram-box">
+                  <input id="diagramImage" type="file" accept="image/*" class="form-control">
+                  <div class="form-text">Use this for graphs, diagrams, structures, figures, reaction schemes, etc. The image is compressed before saving.</div>
+                  <div id="diagramPreview" class="mt-2"></div>
+                  <button type="button" id="removeDiagramBtn" class="btn btn-sm btn-outline-danger rounded-pill mt-2 d-none"><i class="bi bi-trash"></i> Remove image</button>
+                </div>
               </div>
             </div>
-            <div class="d-flex gap-2 mt-3">
-              <button class="btn btn-primary" type="submit"><i class="bi bi-cloud-arrow-up"></i> Save question</button>
-              <button class="btn btn-light" type="button" id="clearFormBtn">Clear</button>
+
+            <div class="d-flex flex-wrap gap-2 mt-4">
+              <button class="btn btn-primary rounded-pill px-4" type="submit"><i class="bi bi-cloud-arrow-up"></i> Save question</button>
+              <button class="btn btn-light rounded-pill px-4" type="button" id="clearFormBtn">Clear</button>
             </div>
             <div id="saveMsg" class="small mt-2"></div>
           </form>
-          <hr>
-          <h6>Existing questions</h6>
+
+          <hr class="my-4">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h6 class="mb-0">Existing questions</h6><span class="small text-muted">Edit any question anytime</span>
+          </div>
           <div id="adminQuestionList"></div>
         </div>
       </div>
@@ -166,81 +196,44 @@
   </div>
 </div>
 
-<!-- Firebase + app -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
   import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
   import { getDatabase, ref, onValue, push, set, update, remove } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
 
-  // ==========================================================
-  // PASTE YOUR FIREBASE WEB APP CONFIG HERE
-  // ==========================================================
   const firebaseConfig = {
-    apiKey: "PASTE_API_KEY",
-    authDomain: "PASTE_PROJECT.firebaseapp.com",
-    databaseURL: "https://PASTE_PROJECT-default-rtdb.firebaseio.com",
-    projectId: "PASTE_PROJECT",
-    storageBucket: "PASTE_PROJECT.firebasestorage.app",
-    messagingSenderId: "PASTE_SENDER_ID",
-    appId: "PASTE_APP_ID"
+    apiKey: "AIzaSyCU-oIPSicWfIb1gyNZWTDDAdOW1obe2Qc",
+    authDomain: "pcm-mock-arena.firebaseapp.com",
+    databaseURL: "https://pcm-mock-arena-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "pcm-mock-arena",
+    storageBucket: "pcm-mock-arena.firebasestorage.app",
+    messagingSenderId: "346461659545",
+    appId: "1:346461659545:web:b3b7e24a03a2f222577308"
   };
 
-  const configured = !firebaseConfig.apiKey.startsWith("PASTE_");
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getDatabase(app);
 
   window.PCM = {
-    firebaseReady: configured,
-    initialize: null,
-    db: null,
-    auth: null,
-    refs: { questions: null },
-    dbFns: { push, set, update, remove, ref }
+    firebaseReady: true, db, auth,
+    dbFns: { push, set, update, remove, ref },
+    firebase: {
+      signIn: (email, password) => signInWithEmailAndPassword(auth, email, password),
+      signOut: () => signOut(auth)
+    }
   };
 
-  if (configured) {
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getDatabase(app);
-    PCM.auth = auth;
-    PCM.db = db;
-    PCM.refs.questions = ref(db, "questions");
-
-    onValue(PCM.refs.questions, (snapshot) => {
-      const data = snapshot.val() || {};
-      window.dispatchEvent(new CustomEvent("questionsUpdated", { detail: data }));
-    });
-
-    onAuthStateChanged(auth, (user) => {
-      window.dispatchEvent(new CustomEvent("authChanged", { detail: user }));
-    });
-  } else {
-    window.dispatchEvent(new CustomEvent("questionsUpdated", { detail: window.STARTER_QUESTIONS || {} }));
-  }
-
-  window.PCM.firebase = {
-    signIn: (email, password) => signInWithEmailAndPassword(auth, email, password),
-    signOut: () => signOut(auth)
-  };
+  onValue(ref(db, "questions"), snapshot => {
+    window.dispatchEvent(new CustomEvent("questionsUpdated", { detail: snapshot.val() || {} }));
+  });
+  onAuthStateChanged(auth, user => {
+    window.dispatchEvent(new CustomEvent("authChanged", { detail: user }));
+  });
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="starter_questions.js"></script>
-<script src="starter_questions.js"></script>
 <script src="app.js"></script>
-
-<script>
-document.addEventListener("DOMContentLoaded",()=>{
-  const b=document.getElementById("seedBtn");
-  if(!b)return;
-  b.onclick=async()=>{
-    if(!window.PCM?.firebaseReady||!window.PCM?.db){alert("Configure Firebase first.");return}
-    if(!window.PCM.user && !window.PCM?.auth?.currentUser){alert("Login as admin first.");return}
-    if(!confirm("Add the 5 Chemistry starter questions?"))return;
-    for(const q of (window.STARTER_QUESTIONS||[])){
-      await PCM.dbFns.set(PCM.dbFns.push(PCM.dbFns.ref(PCM.db,"questions")),q);
-    }
-    alert("5 starter questions added.");
-  };
-});
-</script>
 </body>
 </html>

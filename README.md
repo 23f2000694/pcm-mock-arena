@@ -1,49 +1,48 @@
-# PCM Mock Arena — Text-Only Questions + Free Screenshot OCR
+# PCB Mock Arena — Firebase + OCR + Manual Question Editor
 
-## What changed
+## Features
+- Physics, Chemistry, Biology only (Maths removed).
+- Public questions are text-first; optional diagrams/images can be attached to a question.
+- Selecting an option immediately reveals:
+  - Correct/incorrect result
+  - Correct answer
+  - Solution description (if provided)
+- Answer state is intentionally stored only in page memory, so refreshing the page resets answered questions.
+- Admin login through Firebase Email/Password.
+- Admin can create, edit, and delete every question manually.
+- Screenshot OCR is free and browser-side using Tesseract.js.
+- OCR never decides the final answer: the admin manually chooses the correct option.
+- Optional diagram/question image can be compressed and saved with the question.
+- Firebase Realtime Database makes saved questions available to visitors.
+- "Hello Uma Bharti" is used on the main banner.
+- Progress bar removed.
+- UI has animated buttons, question cards, reveal effects and mobile-friendly controls.
 
-- Public questions no longer display the original screenshot.
-- Questions are shown as extracted text + A/B/C/D options.
-- Admin can upload a screenshot directly in the website.
-- The browser uses Tesseract.js OCR to extract text without a paid API.
-- The extracted question is placed into the editor for verification.
-- Admin selects the correct answer and saves it to Firebase.
-- Firebase provides live shared question data.
-- The five supplied Chemistry questions are included as starter data.
+## Admin workflow
+1. Open Admin.
+2. Login with the Firebase Email/Password user.
+3. Click New question.
+4. Select Physics, Chemistry or Biology.
+5. Upload screenshot and click Extract text (optional).
+6. Manually correct the question text and all four options.
+7. Manually choose the Correct answer.
+8. Add a Solution description.
+9. Optionally upload a diagram/image.
+10. Save question.
 
-## Important AI/OCR note
+Existing questions have an Edit button so you can correct OCR mistakes later.
 
-This uses free browser-side OCR, not a paid AI API. OCR can make mistakes, especially with equations, subscripts, superscripts, tables and chemistry notation. Always check the extracted question/options and correct answer before publishing.
-
-For higher-quality AI extraction later, you can connect a server-side vision model/API. Do not put a secret API key directly in GitHub Pages frontend code.
-
-## Manual question workflow
-
-1. Login as Admin.
-2. Click New question.
-3. Choose subject.
-4. Upload the screenshot in "Free AI/OCR Question Import".
-5. Click "Extract text from screenshot".
-6. Check the generated question text and A/B/C/D.
-7. Select the correct option.
-8. Add/edit explanation.
-9. Click Save question.
-
-The public page displays only the text and options, not the uploaded screenshot.
-
-## GitHub Pages
-
-Upload `index.html`, `style.css`, `app.js`, and `starter_questions.js` to the repository root. Enable GitHub Pages from Settings → Pages → Deploy from a branch → `main` → `/ (root)`.
+## Important image note
+The OCR screenshot itself is NOT saved as the public question image. If you want a diagram/figure visible to students, upload it separately in "Optional diagram / question image". It is compressed in the browser before being saved.
 
 ## Firebase
+This package includes the Firebase Web App configuration and Realtime Database URL for the `pcm-mock-arena` project.
 
-GitHub Pages is static hosting. Firebase Realtime Database provides shared live questions.
+Authentication:
+- Firebase Authentication → Email/Password enabled.
+- Create your admin user under Authentication → Users.
 
-In `index.html`, replace the placeholder Firebase config with your Firebase Web App config.
-
-Enable Firebase Authentication → Email/Password and create your admin user.
-
-Realtime Database rules can start as:
+Recommended Realtime Database rules after initial setup:
 
 ```json
 {
@@ -56,12 +55,17 @@ Realtime Database rules can start as:
 }
 ```
 
-For production, restrict writes to your specific admin UID.
+For stronger security later, restrict `.write` to your admin UID.
 
-## Five starter questions
+## GitHub Pages
+Upload the actual files (not the ZIP) to the repository root:
+- index.html
+- app.js
+- style.css
+- starter_questions.js
+- README.md
 
-The `starter_questions.js` file contains the five text-only Chemistry questions created from the supplied screenshots. After Firebase is configured and you are logged in, Admin → "Add 5 starter questions" inserts them into the database.
+Then GitHub Settings → Pages → Deploy from branch → `main` → `/ (root)`.
 
-## No image storage is needed for the public question
-
-The uploaded screenshot is processed in the browser and the extracted text is put into the question form. The image itself is not stored in the public question record.
+## Firebase authorized domain
+Firebase Authentication → Settings → Authorized domains → add your GitHub Pages host, e.g. `YOUR-USERNAME.github.io`.
