@@ -21,23 +21,30 @@
     </button>
     <div id="nav" class="collapse navbar-collapse">
       <div class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
-        <button class="nav-subject active" data-subject="Physics"><i class="bi bi-lightning-charge"></i> Physics</button>
-        <button class="nav-subject" data-subject="Chemistry"><i class="bi bi-flask"></i> Chemistry</button>
-        <button class="nav-subject" data-subject="Biology"><i class="bi bi-heart-pulse"></i> Biology</button>
-        <button class="btn btn-outline-light btn-sm ms-lg-2 admin-pill" id="adminBtn"><i class="bi bi-shield-lock"></i> Admin</button>
+        <button class="nav-home" id="navHome"><i class="bi bi-house-door-fill"></i> Home</button>
+        <button class="nav-subject d-none" data-subject="Physics"><i class="bi bi-lightning-charge"></i> Physics</button>
+        <button class="nav-subject d-none" data-subject="Chemistry"><i class="bi bi-flask"></i> Chemistry</button>
+        <button class="nav-subject d-none" data-subject="Biology"><i class="bi bi-heart-pulse"></i> Biology</button>
+        <button class="btn btn-outline-light btn-sm ms-lg-2 rounded-pill" id="pdfBtn"><i class="bi bi-file-earmark-pdf"></i> Create PDF</button>
+        <button class="btn btn-outline-light btn-sm rounded-pill admin-pill" id="adminBtn"><i class="bi bi-shield-lock"></i> Admin</button>
       </div>
     </div>
   </div>
 </nav>
 
-<header class="hero">
+<header class="hero" id="homeHero">
   <div class="container">
     <div class="hero-card">
       <div class="hero-copy">
-        <span class="eyebrow">PRACTICE • TEST • IMPROVE</span>
+        <span class="eyebrow">NEET • PRACTICE • TEST • IMPROVE</span>
         <h1>Hello Uma Bharti <span>👋</span></h1>
-        <h2>Master <span>PCB</span> one question at a time.</h2>
-        <p class="lead">Choose Physics, Chemistry or Biology, attempt the question and get an instant result with the correct answer and solution.</p>
+        <h2>Welcome to <span>PCB Mock Arena</span></h2>
+        <p class="lead">Choose your subject below and start solving. Instant feedback, explanations, bookmarks and a clean mock-test experience.</p>
+        <div class="hero-subjects">
+          <button class="hero-subject" data-subject="Physics"><i class="bi bi-lightning-charge-fill"></i><span>Physics</span><small id="heroPhysicsCount">0 Questions</small></button>
+          <button class="hero-subject" data-subject="Chemistry"><i class="bi bi-flask-fill"></i><span>Chemistry</span><small id="heroChemistryCount">0 Questions</small></button>
+          <button class="hero-subject" data-subject="Biology"><i class="bi bi-heart-pulse-fill"></i><span>Biology</span><small id="heroBiologyCount">0 Questions</small></button>
+        </div>
         <div class="hero-actions">
           <button class="hero-cta" data-scroll="#questionList"><i class="bi bi-play-circle-fill"></i> Start solving</button>
           <button class="hero-secondary" id="heroAdmin"><i class="bi bi-person-gear"></i> Admin panel</button>
@@ -50,12 +57,17 @@
 </header>
 
 <main class="container pb-5">
-  <div class="subject-strip">
+  <div class="subject-strip" id="subjectBar">
     <div>
-      <span class="small text-uppercase subject-kicker">Choose a subject</span>
+      <span class="small text-uppercase subject-kicker">Current subject</span>
       <h2 id="subjectTitle">Physics</h2>
     </div>
-    <div class="subject-tip"><i class="bi bi-lightbulb"></i> Select an option to reveal the answer</div>
+    <div class="stats-row">
+      <div class="stat-chip"><span>Physics</span><b id="statPhysics">0</b></div>
+      <div class="stat-chip"><span>Chemistry</span><b id="statChemistry">0</b></div>
+      <div class="stat-chip"><span>Biology</span><b id="statBiology">0</b></div>
+      <div class="stat-chip"><span>Total</span><b id="statTotal">0</b></div>
+    </div>
   </div>
 
   <section id="questionList" class="question-list"></section>
@@ -97,7 +109,8 @@
             <span class="badge text-bg-success rounded-pill"><i class="bi bi-cloud-check"></i> Admin connected</span>
             <div class="d-flex flex-wrap gap-2">
               <button id="newQuestionBtn" class="btn btn-primary btn-sm rounded-pill"><i class="bi bi-plus-lg"></i> New question</button>
-              <button id="seedBtn" class="btn btn-outline-success btn-sm rounded-pill"><i class="bi bi-database-add"></i> Add starter questions</button>
+              <button id="seedBtn" class="btn btn-outline-success btn-sm rounded-pill"><i class="bi bi-database-add"></i> Add 30 NEET PYQ-based</button>
+              <button id="adminPdfBtn" class="btn btn-outline-dark btn-sm rounded-pill"><i class="bi bi-file-earmark-pdf"></i> Answer-key PDF</button>
               <button id="logoutBtn" class="btn btn-outline-secondary btn-sm rounded-pill">Logout</button>
             </div>
           </div>
@@ -127,7 +140,7 @@
               <div class="col-12">
                 <div class="ai-import-box">
                   <div class="d-flex align-items-center gap-2 mb-1"><i class="bi bi-stars fs-5"></i><strong>Free screenshot → text importer</strong></div>
-                  <p class="small text-muted mb-2">Upload the screenshot. OCR reads it in the browser. Nothing is published until you review and save it.</p>
+                  <p class="small text-muted mb-2">Upload the screenshot. OCR reads the question AND A/B/C/D options in the browser. Nothing is published until you review and save it.</p>
                   <input id="aiImage" type="file" accept="image/*" class="form-control">
                   <button type="button" id="extractBtn" class="btn btn-dark rounded-pill mt-2"><i class="bi bi-magic"></i> Extract text</button>
                   <div id="aiMsg" class="small mt-2"></div>
@@ -140,27 +153,29 @@
               </div>
 
               <div class="col-12">
-                <div class="manual-section-title"><i class="bi bi-ui-checks"></i> Answer options</div>
+                <div class="manual-section-title"><i class="bi bi-ui-checks"></i> Answer format</div>
+                <select id="questionType" class="form-select mt-2"><option value="mcq">MCQ — four options</option><option value="subjective">Subjective — student types answer</option></select>
               </div>
               <div class="col-md-6">
-                <label class="form-label">Option A</label><input id="optA" class="form-control" required>
+                <label class="form-label">Option A</label><input id="optA" class="form-control">
               </div>
               <div class="col-md-6">
-                <label class="form-label">Option B</label><input id="optB" class="form-control" required>
+                <label class="form-label">Option B</label><input id="optB" class="form-control">
               </div>
               <div class="col-md-6">
-                <label class="form-label">Option C</label><input id="optC" class="form-control" required>
+                <label class="form-label">Option C</label><input id="optC" class="form-control">
               </div>
               <div class="col-md-6">
-                <label class="form-label">Option D</label><input id="optD" class="form-control" required>
+                <label class="form-label">Option D</label><input id="optD" class="form-control">
               </div>
 
               <div class="col-md-6">
                 <label class="form-label">Manual correct answer</label>
-                <select id="correct" class="form-select" required>
+                <select id="correct" class="form-select">
                   <option value="0">A</option><option value="1">B</option><option value="2">C</option><option value="3">D</option>
                 </select>
-                <div class="form-text">You choose the final answer. OCR never decides it for you.</div>
+                <input id="correctText" class="form-control mt-2 d-none" placeholder="Correct answer text for subjective question">
+                <div class="form-text">For MCQ choose A/B/C/D. For subjective, type the accepted correct answer.</div>
               </div>
               <div class="col-md-6">
                 <label class="form-label">Solution description</label>
@@ -186,8 +201,12 @@
           </form>
 
           <hr class="my-4">
-          <div class="d-flex justify-content-between align-items-center mb-2">
-            <h6 class="mb-0">Existing questions</h6><span class="small text-muted">Edit any question anytime</span>
+          <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+            <div><h6 class="mb-0">Existing questions</h6><span class="small text-muted">Admin view shows the correct answer. Students never see it before answering.</span></div>
+            <div class="d-flex flex-wrap gap-2">
+              <input id="adminSearch" class="form-control form-control-sm rounded-pill" style="min-width:220px" placeholder="Search questions…">
+              <select id="adminSubjectFilter" class="form-select form-select-sm rounded-pill" style="width:145px"><option>All</option><option>Physics</option><option>Chemistry</option><option>Biology</option></select>
+            </div>
           </div>
           <div id="adminQuestionList"></div>
         </div>
@@ -196,6 +215,7 @@
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
   import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
@@ -226,6 +246,8 @@
 
   onValue(ref(db, "questions"), snapshot => {
     window.dispatchEvent(new CustomEvent("questionsUpdated", { detail: snapshot.val() || {} }));
+  }, error => {
+    window.dispatchEvent(new CustomEvent("firebaseReadError", { detail: error }));
   });
   onAuthStateChanged(auth, user => {
     window.dispatchEvent(new CustomEvent("authChanged", { detail: user }));
