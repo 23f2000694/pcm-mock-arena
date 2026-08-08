@@ -58,15 +58,23 @@
 
 <main class="container pb-5">
   <div class="subject-strip" id="subjectBar">
-    <div>
+    <div class="subject-heading">
       <span class="small text-uppercase subject-kicker">Current subject</span>
       <h2 id="subjectTitle">Physics</h2>
+      <div id="questionCounter" class="question-counter">Question 1 of 1</div>
     </div>
-    <div class="stats-row">
-      <div class="stat-chip"><span>Physics</span><b id="statPhysics">0</b></div>
-      <div class="stat-chip"><span>Chemistry</span><b id="statChemistry">0</b></div>
-      <div class="stat-chip"><span>Biology</span><b id="statBiology">0</b></div>
-      <div class="stat-chip"><span>Total</span><b id="statTotal">0</b></div>
+    <div class="subject-tools">
+      <div class="stats-row">
+        <div class="stat-chip"><span>Physics</span><b id="statPhysics">0</b></div>
+        <div class="stat-chip"><span>Chemistry</span><b id="statChemistry">0</b></div>
+        <div class="stat-chip"><span>Biology</span><b id="statBiology">0</b></div>
+        <div class="stat-chip"><span>Total</span><b id="statTotal">0</b></div>
+      </div>
+      <div class="subject-pdf-actions">
+        <button class="pdf-subject-btn" id="pdfPhysics"><i class="bi bi-file-earmark-pdf"></i> Physics PDF</button>
+        <button class="pdf-subject-btn" id="pdfChemistry"><i class="bi bi-file-earmark-pdf"></i> Chemistry PDF</button>
+        <button class="pdf-subject-btn" id="pdfBiology"><i class="bi bi-file-earmark-pdf"></i> Biology PDF</button>
+      </div>
     </div>
   </div>
 
