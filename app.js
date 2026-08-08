@@ -34,7 +34,7 @@ function updateStats(){
 }
 function render(){
   updateStats();$("#subjectTitle").textContent=state.subject;
-  $$(".nav-subject").forEach(b=>b.classList.toggle("active",b.dataset.subject===state.subject));
+  $$(".nav-subject").forEach(b=>b.classList.toggle("active",b.dataset.subjectKey===state.subject));
   const qs=subjectQuestions();
   if(state.activeIndex>=qs.length)state.activeIndex=Math.max(0,qs.length-1);
   $("#emptyState").classList.toggle("d-none",qs.length!==0);
@@ -103,9 +103,26 @@ function bindQuestionButtons(){
   $$(".share-btn").forEach(b=>b.onclick=async()=>{const q=state.questions[b.dataset.share],a=state.answers[q.id],url=location.href.split("#")[0]+"#q="+encodeURIComponent(q.id),text=a?`${q.title||"Question"} — ${a.correct?"Correct!":"Incorrect. Correct answer: "+(q.correctText||letters[q.correct]||"")}`:`${q.title||"Question"} — Try this question!`;try{if(navigator.share)await navigator.share({title:"PCB Mock Arena",text,url});else{await navigator.clipboard.writeText(text+"\n"+url);showToast("Answer link copied!")}}catch(e){}});
 }
 function showToast(message){let t=$("#siteToast");if(!t){t=document.createElement("div");t.id="siteToast";t.className="site-toast";document.body.appendChild(t)}t.textContent=message;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2200)}
-function chooseSubject(s){if(!SUBJECTS.includes(s))return;state.subject=s;state.activeIndex=0;state.answers={};setHomeMode(false);render();window.scrollTo({top:document.querySelector("main")?.offsetTop||0,behavior:"smooth"})}
+function chooseSubject(s){
+  const subject=String(s||"").trim();
+  if(!SUBJECTS.includes(subject)){console.warn("Unknown subject:",subject);return;}
+  state.subject=subject;
+  state.activeIndex=0;
+  state.answers={};
+  setHomeMode(false);
+  render();
+  window.history.replaceState(null,"",`#${encodeURIComponent(subject.toLowerCase())}`);
+  window.scrollTo({top:document.querySelector("main")?.offsetTop||0,behavior:"smooth"});
+}
 // Event delegation makes subject buttons reliable even after the page re-renders.
-document.addEventListener("click",e=>{const subjectButton=e.target.closest("[data-subject]");if(subjectButton){e.preventDefault();chooseSubject(subjectButton.dataset.subject)}});
+document.querySelectorAll(".subject-select").forEach(button=>{
+  button.addEventListener("click", e=>{
+    e.preventDefault();
+    e.stopPropagation();
+    const subject=button.getAttribute("data-subject-key");
+    chooseSubject(subject);
+  });
+});
 $("#navHome").onclick=()=>{setHomeMode(true);state.activeIndex=0;render()};
 $$("[data-scroll]").forEach(b=>b.onclick=()=>document.querySelector(b.dataset.scroll)?.scrollIntoView({behavior:"smooth"}));
 const modal=new bootstrap.Modal("#adminModal");function openAdmin(){modal.show()}$("#adminBtn").onclick=openAdmin;$("#heroAdmin").onclick=openAdmin;$("#emptyAdmin").onclick=openAdmin;
@@ -156,4 +173,6 @@ function createPDF(subject="All"){
 window.addEventListener("questionsUpdated",e=>{state.questions=mergedQuestions(e.detail||{});render();if(state.user)renderAdminList()});
 window.addEventListener("authChanged",e=>{state.user=e.detail;$("#loginPanel").classList.toggle("d-none",!!state.user);$("#editorPanel").classList.toggle("d-none",!state.user);if(state.user)renderAdminList()});
 window.addEventListener("firebaseReadError",e=>{console.error(e.detail);showToast("Live database could not be read. Check Firebase Rules.")});
-state.questions=mergedQuestions({});toggleQuestionType();setHomeMode(true);render();
+const initialHash=decodeURIComponent(location.hash.replace(/^#/,"")).toLowerCase();
+if(SUBJECTS.some(s=>s.toLowerCase()===initialHash)){state.subject=SUBJECTS.find(s=>s.toLowerCase()===initialHash);state.home=false;}
+state.questions=mergedQuestions({});toggleQuestionType();setHomeMode(state.home);render();
